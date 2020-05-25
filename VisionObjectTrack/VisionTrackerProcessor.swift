@@ -75,14 +75,16 @@ class VisionTrackerProcessor {
                     //print("Right: ", rightDistance)
                     let verticalDiff = abs(leftDistance - rightDistance)
                     let horizontalDiff = abs(topDistance - bottomDistance)
-                    let threshold = CGFloat(0.1)
+                        let threshold = CGFloat(0.1)
+                    //let threshold = CGFloat(0.9) *  min(leftDistance, rightDistance, topDistance, bottomDistance)
                     if (abs(topDistance - leftDistance) <= threshold &&
                         abs(leftDistance - bottomDistance) <= threshold &&
                         abs(bottomDistance - rightDistance) <= threshold &&
                         abs(rightDistance - topDistance) <= threshold) {
                         detectedRects.append(polyRect)
                     } else {
-                        print("Diff: ", abs(topDistance - leftDistance))
+                        print("Diff: ", abs(topDistance - threshold))
+                        //detectedRects.append(polyRect)
                     }
                 }
                 //print(detectedRects)
