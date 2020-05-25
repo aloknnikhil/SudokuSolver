@@ -71,18 +71,18 @@ class VisionTrackerProcessor {
                     let rightDistance = CGPointDistance(from: polyRect.bottomRight, to: polyRect.topRight)
                     let topDistance = CGPointDistance(from: polyRect.topLeft, to: polyRect.topRight)
                     let bottomDistance = CGPointDistance(from: polyRect.bottomLeft, to: polyRect.bottomRight)
-                    
-                    let derived = CGPointDistance(from: polyRect.bottomRight, to: polyRect.topLeft)/sqrt(2)
-                    
-                    let threshold = CGFloat(0.1);
-                    print(derived)
-                    print("Top:", topDistance)
-                    if (abs(topDistance - derived) <= threshold &&
-                        abs(leftDistance - derived) <= threshold &&
-                        abs(bottomDistance - derived) <= threshold &&
-                        abs(rightDistance - derived) <= threshold) {
+                    //print("Left: ", leftDistance)
+                    //print("Right: ", rightDistance)
+                    let verticalDiff = abs(leftDistance - rightDistance)
+                    let horizontalDiff = abs(topDistance - bottomDistance)
+                    let threshold = CGFloat(0.1)
+                    if (abs(topDistance - leftDistance) <= threshold &&
+                        abs(leftDistance - bottomDistance) <= threshold &&
+                        abs(bottomDistance - rightDistance) <= threshold &&
+                        abs(rightDistance - topDistance) <= threshold) {
                         detectedRects.append(polyRect)
                     } else {
+                        print("Diff: ", abs(topDistance - leftDistance))
                     }
                 }
                 //print(detectedRects)
