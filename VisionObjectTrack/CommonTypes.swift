@@ -54,6 +54,14 @@ struct TrackedObjectsPalette {
     }
 }
 
+func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+    return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
+}
+
+func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
+    return sqrt(CGPointDistanceSquared(from: from, to: to))
+}
+
 struct TrackedPolyRect {
     var topLeft: CGPoint
     var topRight: CGPoint

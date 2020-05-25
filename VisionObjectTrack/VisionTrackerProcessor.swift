@@ -52,8 +52,8 @@ class VisionTrackerProcessor {
             let rectangleDetectionRequest = VNDetectRectanglesRequest()
             rectangleDetectionRequest.minimumAspectRatio = VNAspectRatio(0.2)
             rectangleDetectionRequest.maximumAspectRatio = VNAspectRatio(1.0)
-            rectangleDetectionRequest.minimumSize = Float(0.1)
-            rectangleDetectionRequest.maximumObservations = Int(10)
+            rectangleDetectionRequest.minimumSize = Float(0.05)
+            rectangleDetectionRequest.maximumObservations = Int(100)
             
             do {
                 try imageRequestHandler.perform([rectangleDetectionRequest])
@@ -66,8 +66,26 @@ class VisionTrackerProcessor {
                 var detectedRects = [TrackedPolyRect]()
                 for (index, rectangleObservation) in initialRectObservations.enumerated() {
                     let rectColor = TrackedObjectsPalette.color(atIndex: index)
-                    detectedRects.append(TrackedPolyRect(observation: rectangleObservation, color: rectColor))
+                    let polyRect = TrackedPolyRect(observation: rectangleObservation, color: rectColor)
+                    let leftDistance = CGPointDistance(from: polyRect.bottomLeft, to: polyRect.topLeft)
+                    let rightDistance = CGPointDistance(from: polyRect.bottomRight, to: polyRect.topRight)
+                    let topDistance = CGPointDistance(from: polyRect.topLeft, to: polyRect.topRight)
+                    let bottomDistance = CGPointDistance(from: polyRect.bottomLeft, to: polyRect.bottomRight)
+                    //print("Left: ", leftDistance)
+                    //print("Right: ", rightDistance)
+                    let verticalDiff = abs(leftDistance - rightDistance)
+                    let horizontalDiff = abs(topDistance - bottomDistance)
+                    let threshold = CGFloat(0.1)
+                    if (abs(topDistance - leftDistance) <= threshold &&
+                        abs(leftDistance - bottomDistance) <= threshold &&
+                        abs(bottomDistance - rightDistance) <= threshold &&
+                        abs(rightDistance - topDistance) <= threshold) {
+                        detectedRects.append(polyRect)
+                    } else {
+                        print("Diff: ", abs(topDistance - leftDistance))
+                    }
                 }
+                //print(detectedRects)
                 firstFrameRects = detectedRects
             }
         }
